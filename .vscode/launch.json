@@ -8,11 +8,10 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\05-fixed-missing-head-tag\\app.js",
+            "program": "app.js",
             "restart": true,
             "runtimeExecutable": "nodemon",
             "console": "integratedTerminal",
-            
         }
     ]
 }
