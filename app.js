@@ -2,16 +2,13 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+<<<<<<< HEAD
 const session = require('express-session');
 const errorController = require('./controllers/error');
+=======
+>>>>>>> parent of 2d1a80a (use ORM (sequelize))
 
-const database = require('./util/database');
-const product = require('./models/product');
-const user = require('./models/user');
-const cart = require('./models/cart');
-const cartitem = require('./models/cart-item');
-const order = require('./models/order');
-const orderitem = require('./models/order-item');
+const errorController = require('./controllers/error');
 
 const app = express();
 
@@ -24,6 +21,7 @@ const shopRoutes = require('./routes/shop');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+<<<<<<< HEAD
 app.use(
     session({
         secret: 'my secret',
@@ -42,44 +40,12 @@ app.use((req, res, next) => {
         .catch(err => console.log(err));
 });
 
+=======
+>>>>>>> parent of 2d1a80a (use ORM (sequelize))
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
 app.use(errorController.get404);
 
-product.belongsTo(user, { constraints: true, onDelete: 'CASCADE' });
-user.hasMany(product);
-user.hasOne(cart);
-
-cart.belongsTo(user);
-cart.belongsToMany(product, { through: cartitem });
-product.belongsToMany(cart, { through: cartitem });
-
-order.belongsTo(user);
-order.belongsToMany(product, { through: orderitem });
-user.hasMany(order);
-
-
-
-database
-    .sync()
-    .then(result => {
-        return user.findOrCreate(
-            { where: { id: 1, username: 'Mostafa-Ebrahim', email: 'mostafa-ebrahim@outlook.com' } }
-        );
-    })
-    .then(([newuser, created]) => {
-        fetchedUser = newuser;
-        return newuser.getCart();
-    })
-    .then(cart => {
-        if (!cart) {
-            fetchedUser.createCart();
-        }
-        app.listen(3000);
-    })
-    .catch(err => {
-        console.log(err);
-    });
-
+app.listen(3000);
