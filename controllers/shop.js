@@ -42,7 +42,7 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  req.newuser
+  req.user
     .getCart()
     .then(cart => {
       return cart
@@ -64,7 +64,7 @@ exports.postCart = (req, res, next) => {
   let fetchedCart;
   let newQuantity = 1;
 
-  req.newuser
+  req.user
     .getCart()
     .then(cart => {
       fetchedCart = cart;
@@ -92,7 +92,7 @@ exports.postCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  req.newuser
+  req.user
     .getCart()
     .then(cart => {
       return cart.getProducts({ where: { id: prodId } })
@@ -108,13 +108,15 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  req.newuser
+  let fetchedCart;
+  req.user
     .getCart()
     .then(cart => {
+      fetchedCart = cart;
       return cart.getProducts();
     })
     .then(products => {
-      return req.newuser
+      return req.user
         .createOrder()
         .then(order => {
           return order.addProducts(
@@ -135,7 +137,7 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.newuser
+  req.user
     .getOrders({ include: ['products'] })
     .then(orders => {
       res.render('shop/orders', {

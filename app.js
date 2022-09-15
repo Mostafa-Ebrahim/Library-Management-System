@@ -6,7 +6,7 @@ const errorController = require('./controllers/error');
 
 const database = require('./util/database');
 const product = require('./models/product');
-const user = require('./models/user');
+const User = require('./models/user');
 const cart = require('./models/cart');
 const cartitem = require('./models/cart-item');
 const order = require('./models/order');
@@ -24,9 +24,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    user.findByPk(1)
-        .then(newuser => {
-            req.newuser = newuser;
+    User.findByPk(1)
+        .then(user => {
+            req.user = user;
             next();
         })
         .catch(err => console.log(err));
@@ -37,30 +37,30 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-product.belongsTo(user, { constraints: true, onDelete: 'CASCADE' });
-user.hasMany(product);
-user.hasOne(cart);
+product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(product);
+User.hasOne(cart);
 
-cart.belongsTo(user);
+cart.belongsTo(User);
 cart.belongsToMany(product, { through: cartitem });
 product.belongsToMany(cart, { through: cartitem });
 
-order.belongsTo(user);
+order.belongsTo(User);
 order.belongsToMany(product, { through: orderitem });
-user.hasMany(order);
+User.hasMany(order);
 
 
 
 database
     .sync()
     .then(result => {
-        return user.findOrCreate(
+        return User.findOrCreate(
             { where: { id: 1, username: 'Mostafa-Ebrahim', email: 'mostafa-ebrahim@outlook.com' } }
         );
     })
-    .then(([newuser, created]) => {
-        fetchedUser = newuser;
-        return newuser.getCart();
+    .then(([user, created]) => {
+        fetchedUser = user;
+        return user.getCart();
     })
     .then(cart => {
         if (!cart) {
